@@ -6,7 +6,7 @@ A simple, powerful and easy to use log Library for Go
 ## Installation
 
 ```bash
-$ $ go get -u -v github.com/junhwong/mano/logs
+$ go get -u -v github.com/junhwong/mano/logs
 ```
 
 ## Usage
