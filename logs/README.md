@@ -1,20 +1,27 @@
-# mano.logs  [![NPM version][npm-image]][npm-url] [![License][license-image]][license-url] [![Build Status][travis-image]][travis-url]
+# mano/logs  [![License][license-image]][license-url] [![Build Status][travis-image]][travis-url]
 
-An web framework for Go
+A simple, powerful and easy to use log Library for Go
 
-
-## Documentation
-
-- 
 
 ## Installation
 
 ```bash
-$ 
+$ $ go get -u -v github.com/junhwong/mano/logs
 ```
 
 ## Usage
-```
+```go
+
+package main
+
+import "github.com/junhwong/mano/logs"
+
+func main(){
+    logs.Debug("hello logs")
+
+    logs.Debug("print red color text :{red:%s}","i'm red!")
+}
+
 
 ```
 
