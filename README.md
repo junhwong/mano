@@ -1,4 +1,4 @@
-# mano  [![NPM version][npm-image]][npm-url] [![License][license-image]][license-url] [![Build Status][travis-image]][travis-url]
+# mano  [![License][license-image]][license-url] [![Build Status][travis-image]][travis-url]
 
 An web framework for Go
 
