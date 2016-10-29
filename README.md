@@ -1,27 +1,50 @@
-# mano
+# mano  [![NPM version][npm-image]][npm-url] [![License][license-image]][license-url] [![Build Status][travis-image]][travis-url]
+
 An web framework for Go
 
 
+## Documentation
 
-vscode 调试
-    vscode 插件
-    go get -u -v github.com/derekparker/delve/cmd/dlv
+- 
+
+## Installation
+
+```bash
+$ go get -u -v github.com/junhwong/mano
+
+```
+
+## Usage
+```
+
+```
+
+## Changelog
+
+Details changes for each release are documented in the [release notes](https://github.com/junhwong/mano/releases).
+
+## Contribution
+
+If you find a bug or want to contribute to the code or documentation, you can help by submitting an [issue](https://github.com/junhwong/mano/issues) or a [pull request](https://github.com/junhwong/mano/pulls).
+
+## License
+
+[Apache-2.0][license-url]
 
 
+[downloads-image]: https://img.shields.io/npm/dm/otpl.svg
 
-API参考
-http://regoio.herokuapp.com/
-http://www.cnblogs.com/golove/p/3269099.html
+[license-url]: https://opensource.org/licenses/Apache-2.0
+[license-image]: https://img.shields.io/badge/license-Apache2.0-blue.svg
 
-https://msdn.microsoft.com/zh-cn/library/system.web.routing.routedata(v=vs.118).aspx
-https://msdn.microsoft.com/en-us/library/system.web.httprequest(v=vs.110).aspx
-http://docs.spring.io/spring/docs/5.0.0.M2/javadoc-api/org/springframework/web/servlet/View.html
-https://tomcat.apache.org/tomcat-9.0-doc/servletapi/index.html
-https://msdn.microsoft.com/zh-cn/library/system.web.mvc.iview(v=vs.118).aspx
-https://social.msdn.microsoft.com/Search/zh-CN?query=ViewEngine&pgArea=header&emptyWatermark=true&ac=4
-https://github.com/go-macaron/macaron
-https://gowalker.org/gopkg.in/macaron.v1
-http://beego.me/docs/mvc/model/orm.md
-http://expressjs.com/en/4x/api.html
-https://laravel.com/api/5.3/
-http://koajs.com/
+[npm-url]: https://www.npmjs.com/package/otpl
+[npm-image]: https://img.shields.io/npm/v/otpl.svg
+
+[travis-url]: https://travis-ci.org/junhwong/mano
+[travis-image]: https://img.shields.io/travis/junhwong/mano.svg
+
+[coveralls-url]: https://coveralls.io/r/junhwong/mano
+[coveralls-image]: https://img.shields.io/coveralls/junhwong/mano/master.svg
+
+[gitter-url]: https://gitter.im/junhwong/mano
+[gitter-image]: https://badges.gitter.im/junhwong/mano.png

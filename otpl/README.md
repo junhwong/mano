@@ -1,14 +1,49 @@
+# mano.otpl  [![NPM version][npm-image]][npm-url] [![License][license-image]][license-url] [![Build Status][travis-image]][travis-url]
+
+An web framework for Go
 
 
-检查并完成：
+## Documentation
 
-&& 和 || 操作符 在第一个表达式不成立时 第二个表达式不执行
+- 
+
+## Installation
+
+```bash
+$ 
+```
+
+## Usage
+```
+
+```
+
+## Changelog
+
+Details changes for each release are documented in the [release notes](https://github.com/junhwong/mano/releases).
+
+## Contribution
+
+If you find a bug or want to contribute to the code or documentation, you can help by submitting an [issue](https://github.com/junhwong/mano/issues) or a [pull request](https://github.com/junhwong/mano/pulls).
+
+## License
+
+[Apache-2.0][license-url]
 
 
+[downloads-image]: https://img.shields.io/npm/dm/otpl.svg
 
-loadMember 如果成员对象是函数，是返回结果还是值，如果是值那成员函数调用如何解决？
+[license-url]: https://opensource.org/licenses/Apache-2.0
+[license-image]: https://img.shields.io/badge/license-Apache2.0-blue.svg
 
+[npm-url]: https://www.npmjs.com/package/otpl
+[npm-image]: https://img.shields.io/npm/v/otpl.svg
 
-block的加载顺序
+[travis-url]: https://travis-ci.org/junhwong/mano
+[travis-image]: https://img.shields.io/travis/junhwong/mano.svg
 
-增加require标签
+[coveralls-url]: https://coveralls.io/r/junhwong/mano
+[coveralls-image]: https://img.shields.io/coveralls/junhwong/mano/master.svg
+
+[gitter-url]: https://gitter.im/junhwong/mano
+[gitter-image]: https://badges.gitter.im/junhwong/mano.png
