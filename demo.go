@@ -35,10 +35,12 @@ func test() {
 func main() {
 	// typ:=reflect.TypeOf(test)
 	// panic(typ.Kind())
-	lo := logs.NewLogger("m")
-	lo.SetLogStack(true)
-	lo.SetLevel(logs.LDEBUG)
-	lo.Debug("hello {red:%s}!", "word")
+
+	logs.SetLevel(logs.LDEBUG)
+
+	logs.Debug("hello logs")
+
+	logs.Debug("print red color text :{red:%s}", "i'm red!")
 
 	//logs.Error("hello {red:%s}!","word")
 

@@ -22,8 +22,11 @@ func main(){
     logs.Debug("print red color text :{red:%s}","i'm red!")
 }
 
-
 ```
+
+Output:
+
+![screenshot](https://raw.githubusercontent.com/junhwong/mano/master/logs/screenshot.png)
 
 ## Changelog
 
