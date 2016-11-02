@@ -35,6 +35,6 @@ func (c *Console) Log(entry *Entry) {
 	_, err := fmt.Fprint(c.output, msg)
 	if err != nil {
 		panic(fmt.Errorf("[mano.logs.Console.Log] %v", err))
-
 	}
+
 }

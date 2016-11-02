@@ -38,9 +38,9 @@ func main() {
 
 	logs.SetLevel(logs.LDEBUG)
 
-	logs.Debug("hello logs")
+	logs.Debug(logs.NewError(nil, "hello logs"))
 
-	logs.Debug("print red color text :{red:%s}", "i'm red!")
+	//logs.Debug("print red color text :{red:%s}", "i'm red!")
 
 	//logs.Error("hello {red:%s}!","word")
 

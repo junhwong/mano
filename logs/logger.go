@@ -3,18 +3,18 @@ package logs
 import (
 	"io"
 	"runtime"
-	"runtime/debug"
 	"sync"
 	"time"
 )
 
 type Entry struct {
-	Time    time.Time
-	Level   Level
-	Message []interface{}
-	Caller  string
-	Line    int
-	Stack   []byte
+	Time       time.Time
+	Level      Level
+	Message    []interface{}
+	Caller     string
+	Line       int
+	Stack      []byte
+	StackTrace []*runtime.Frame
 }
 
 type Provider interface {
@@ -107,7 +107,7 @@ func (l *Logger) log(level Level, message ...interface{}) {
 	}
 
 	if l.logStack || level >= LERROR {
-		entry.Stack = debug.Stack()
+		entry.StackTrace = getFrames(l.calldepth)
 	}
 
 	l.provider.Log(entry)

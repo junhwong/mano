@@ -23,8 +23,12 @@ func (handler *RouteHandler) Handle(writer http.ResponseWriter, request *http.Re
 
 	defer func() {
 		if r := recover(); r != nil {
+			var ok bool
+			if err, ok = r.(error); !ok {
+				err = errors.New(fmt.Sprint(r))
+			}
 			//logs.Error(r)
-			err = errors.New(fmt.Sprint(r))
+
 			// log.Debug("%s\n", r)
 			// ctx.writer.WriteHeader(http.StatusInternalServerError)
 		}

@@ -47,11 +47,27 @@ func formatMessage(isTerminal bool, v ...interface{}) string {
 			}
 			msg += fmt.Sprintf(format, v[1:]...)
 
+		} else if err, ok := v[0].(error); ok {
+			msg += err.Error()
 		} else {
-			msg += fmt.Sprint(v...)
+			msg += fmt.Sprint("%v", v[0])
 		}
 	}
 	return msg
+}
+
+func getFilename(file string) string {
+	if file == "" {
+		return "???"
+	}
+	last := strings.LastIndex(file, "/")
+	if last < 0 {
+		last = strings.LastIndex(file, "\\")
+	}
+	if last < 0 {
+		return file
+	}
+	return file[last+1:]
 }
 
 func FormatLog(isTerminal bool, entry *Entry) string {
@@ -59,23 +75,60 @@ func FormatLog(isTerminal bool, entry *Entry) string {
 		return ""
 	}
 
-	timestr := entry.Time.Format("2006/01/02 15:04:05")
-	msg := fmt.Sprintf("%s %s%s", timestr, colorForLevel(entry.Level, isTerminal), entry.Level.Lable())
-	msg += ResetSetter(isTerminal)
+	msg := entry.Time.Format("2006-01-02 15:04:05")
 	msg += " "
-	msg += GetColorSetter("cyan")(isTerminal)
-	msg += entry.Caller
-	msg += ResetSetter(isTerminal)
-	msg += " : "
-	msg += formatMessage(isTerminal, entry.Message...)
-	if !strings.HasSuffix(msg, "\n") {
-		msg += "\n"
-	}
+	// msg += GetColorSetter("cyan")(isTerminal)
+	// msg += entry.Caller
+	// msg += ResetSetter(isTerminal)
+	msg += fmt.Sprintf("%s%s:%d%s\n", GetColorSetter("cyan")(isTerminal), entry.Caller, entry.Line, ResetSetter(isTerminal))
+	// msg += "\n"
+	msg += fmt.Sprintf("%s%s%s:", colorForLevel(entry.Level, isTerminal), entry.Level.Lable(), ResetSetter(isTerminal))
 
-	if entry.Stack != nil && len(entry.Stack) > 0 {
-		msg += string(entry.Stack)
+	if ex, ok := entry.Message[0].(*Exception); ok {
+		msg += ex.Error()
 		if !strings.HasSuffix(msg, "\n") {
 			msg += "\n"
+		}
+		i := 0
+		max := len(ex.Trace())
+		for i < max {
+			frame := ex.Trace()[i]
+			if strings.EqualFold(frame.Function, "runtime.goexit") {
+				break
+			}
+
+			msg += fmt.Sprintf("\tat %s(%s:%d)\n", frame.Function, getFilename(frame.File), frame.Line)
+
+			i++
+		}
+
+		//msg += string(ex.Stack())
+		if !strings.HasSuffix(msg, "\n") {
+			msg += "\n"
+		}
+
+	} else {
+		msg += formatMessage(isTerminal, entry.Message...)
+		if !strings.HasSuffix(msg, "\n") {
+			msg += "\n"
+		}
+
+		if entry.StackTrace != nil && len(entry.StackTrace) > 0 {
+			i := 0
+			max := len(entry.StackTrace)
+			for i < max {
+				frame := entry.StackTrace[i]
+				if strings.EqualFold(frame.Function, "runtime.goexit") {
+					break
+				}
+
+				msg += fmt.Sprintf("\tat %s(%s:%d)\n", frame.Function, getFilename(frame.File), frame.Line)
+
+				i++
+			}
+			if !strings.HasSuffix(msg, "\n") {
+				msg += "\n"
+			}
 		}
 	}
 
