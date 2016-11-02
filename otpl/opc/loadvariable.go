@@ -15,11 +15,13 @@ func (op *opLoadVariable) Load() (err error) {
 
 func (op *opLoadVariable) Exec(ctx common.Context) (ptr common.Ptr, err error) {
 	ptr = op.ptr + 1
-	val, ok := ctx.Var(op.name)
-	err = handErr(!ok, ctx, "unset variable:%s", op.name)
-	if err == nil {
-		ctx.Push(val)
-	}
+	val, _ := ctx.Var(op.name)
+	//TODO: 未设置变量是否输出日志？
+	// err = handErr(!ok, ctx, "unset variable:%s", op.name)
+	// if err == nil {
+	// 	ctx.Push(val)
+	// }
+	ctx.Push(val)
 	return
 }
 
