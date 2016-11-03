@@ -66,6 +66,7 @@ type context struct {
 	runtime      *Runtime
 	loaders      map[string]common.Loader
 	scopes       []contextScope // common.Stack
+	langFunc     common.TemplateFunc
 }
 
 func (ctx *context) IsStrict() bool {
@@ -214,6 +215,13 @@ func (ctx *context) Exec(loader common.Loader, ptr common.Ptr) (err error) {
 }
 
 func (ctx *context) TemplateFunc(name string, fn ...common.TemplateFunc) common.TemplateFunc {
+	if strings.EqualFold(name, "lang") {
+		//TODO:移到构造函数中
+		if ctx.langFunc == nil {
+			ctx.langFunc = langFunc(ctx)
+		}
+		return ctx.langFunc
+	}
 	f, ok := funcs[name]
 	if ok {
 		return f
@@ -236,4 +244,17 @@ func init() {
 		return
 	}
 
+}
+
+func langFunc(ctx common.Context) common.TemplateFunc {
+	return func(params ...interface{}) (result interface{}, err error) {
+		//doto:完善
+		if len(params) == 0 || params[0] == nil {
+			result = ""
+		} else {
+			result = "LANG::" + ToString(params...)
+		}
+
+		return
+	}
 }
