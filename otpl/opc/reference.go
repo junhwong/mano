@@ -3,7 +3,7 @@ package opc
 import (
 	"fmt"
 
-	"github.com/astaxie/beego/logs"
+	"github.com/junhwong/mano/logs"
 	"github.com/junhwong/mano/otpl/common"
 )
 

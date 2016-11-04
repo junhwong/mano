@@ -2,14 +2,17 @@ package i18n
 
 import (
 	"io/ioutil"
+	"os"
+	"regexp"
+	"strings"
 
-	"github.com/junhwong/mano/logs"
+	"github.com/go-ini/ini"
 )
 
-type Localization interface {
-	Local() string
-	Lang(local string, name string, args ...interface{}) string
-}
+// type Localization interface {
+// 	Local() string
+// 	Lang(local string, name string, args ...interface{}) string
+// }
 
 // type Bundles map[string]*Bundle
 
@@ -37,17 +40,82 @@ type Localization interface {
 // 	return bundle.Lang(local, name, args...)
 // }
 
-func Load(dir string) (err error) {
-	files, err := ioutil.ReadDir(dir)
+var reg, _ = regexp.Compile(`\w+`)
+var localReg, _ = regexp.Compile(`\w{1,4}(\-\w{1,4})?`)
+
+func readFile(file os.FileInfo, path string, section string, entry BundleEntry) error {
+	if file.IsDir() {
+		files, err := ioutil.ReadDir(path + "/" + file.Name())
+		if err != nil {
+			return err
+		}
+		for _, child := range files {
+			sec := file.Name()
+			if section != "" {
+				sec = section + "." + sec
+			}
+			readFile(child, path, sec, entry)
+		}
+		return err
+	}
+
+	name := strings.ToUpper(file.Name())
+	if strings.HasSuffix(name, ".PROPERTIES") {
+		name = name[:len(name)-11]
+	}
+
+	if !reg.MatchString(name) {
+		return nil
+	}
+
+	if section != "" {
+		name = section + "." + name
+	}
+
+	cfg, err := ini.Load(path + "/" + file.Name())
+	if err != nil {
+		return err
+	}
+	for _, key := range cfg.Section("").Keys() {
+		entry[strings.ToUpper(name+"."+key.Name())] = key.Value()
+	}
+
+	return nil
+
+}
+
+func readLang(path string, local string) (entry BundleEntry, err error) {
+
+	files, err := ioutil.ReadDir(path)
 	if err != nil {
 		return
 	}
+	entry = make(BundleEntry)
+
+	for _, file := range files {
+		readFile(file, path, "", entry)
+	}
+	return
+}
+
+func Load(dir string) (bundle Bundle, err error) {
+	files, err := ioutil.ReadDir(dir)
+	if err != nil {
+		return nil, err
+	}
+	bundle = make(Bundle)
 	for _, file := range files {
 		if file.IsDir() {
-			continue
-		} else {
-			panic(file.Name())
-			logs.Debug(file.Name())
+			local := strings.ToUpper(file.Name())
+			if !localReg.MatchString(local) {
+				continue
+			}
+
+			entry, err := readLang(dir+"/"+file.Name(), local)
+			if err != nil {
+				return nil, err
+			}
+			bundle[local] = entry
 		}
 	}
 	return

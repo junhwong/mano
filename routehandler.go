@@ -50,7 +50,7 @@ func (handler *RouteHandler) Handle(writer http.ResponseWriter, request *http.Re
 		//mid, test,
 		},
 	}
-
+	ctx.Data("lang", handler.app.lang) //设置默认语言资源到上下文
 	result := ch.exec(ctx)
 	view, ok := result.(View)
 	if ok {

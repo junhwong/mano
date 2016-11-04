@@ -1,38 +1,69 @@
 package i18n
 
-type MinorBundle struct {
-	local string
-	langs map[string]string
-}
+import (
+	"fmt"
+	"strings"
+)
 
-func (mb *MinorBundle) Local() string {
-	return mb.local
-}
+// type MinorBundle struct {
+// 	local string
+// 	langs map[string]string
+// }
 
-type Bundle struct {
-	MinorBundle
-	Minors map[string]*MinorBundle
-}
+// func (mb *MinorBundle) Local() string {
+// 	return mb.local
+// }
 
-func (b *Bundle) Lang(minorLocal, name string) (lang string) {
-	var ok bool
+type BundleEntry map[string]string
 
-	// 获取指定语言的资源
-	minorBundle, _ := b.Minors[minorLocal]
-	if minorBundle != nil {
-		if lang, ok = minorBundle.langs[name]; ok {
-			return
-		}
-	}
-	// 获取主语言的资源
-	if lang, ok = b.langs[name]; ok {
+type Bundle map[string]BundleEntry
+
+func (b Bundle) Lang(local, name string, args ...interface{}) (lang string) {
+
+	if !localReg.MatchString(local) {
 		return
 	}
-	// 获取其它存在的资源
-	for _, minorBundle = range b.Minors {
-		if lang, ok = minorBundle.langs[name]; ok {
-			return
+	// var ok bool
+	local = strings.ToUpper(local)
+	name = strings.ToUpper(name)
+	major := local
+	entry, _ := b[local]
+	if entry == nil {
+		index := strings.Index(local, "-")
+		if index > 0 {
+			major = local[:index]
+			minor := local[index+1:]
+
+			entry, _ = b[major]
+			if entry == nil {
+				entry, _ = b[minor]
+			}
+		}
+		if entry == nil {
+			for loc, entryLike := range b {
+				if strings.HasPrefix(loc, major) {
+					entry = entryLike
+					break
+				}
+			}
 		}
 	}
-	return
+
+	var tag string
+	if entry != nil {
+		tag, _ = entry[name]
+	}
+	if tag == "" {
+		for loc, entry := range b {
+			if strings.HasPrefix(loc, major) {
+				continue
+			}
+			tag, _ = entry[name]
+			if tag != "" {
+				break
+			}
+		}
+	}
+	// logs.Debug("tag:%s,name:%s  %s  %s    %+v", tag, name, local, major, entry)
+	return fmt.Sprintf(tag, args...)
 }
