@@ -20,7 +20,7 @@ type ActionView struct {
 
 func (v *ActionView) ContentType() string {
 	if v.contentType == "" {
-		return "text/plain; charset=UTF-8"
+		return "application/octet-stream; charset=UTF-8"
 	}
 	return v.contentType
 }
@@ -93,6 +93,9 @@ func (v *TemplateView) Render(ctx Context) error {
 
 func (ctx *RequestContext) View(template string, contentType ...string) View {
 	view := &TemplateView{
+		ActionView: &ActionView{
+			local: ctx.local,
+		},
 		Template: template,
 	}
 	if len(contentType) > 0 {
@@ -112,5 +115,9 @@ func (*emptyView) Render(ctx Context) error {
 }
 
 func (ctx *RequestContext) Empty() View {
-	return &emptyView{}
+	return &emptyView{
+		ActionView: &ActionView{
+			local: ctx.local,
+		},
+	}
 }

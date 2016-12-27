@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
-
-	"github.com/junhwong/mano/logs"
 )
 
 type RouteHandler struct {
@@ -20,7 +18,6 @@ func (handler *RouteHandler) Init(app *Application) error {
 }
 
 func (handler *RouteHandler) Handle(writer http.ResponseWriter, request *http.Request) (complated bool, err error) {
-
 	defer func() {
 		if r := recover(); r != nil {
 			var ok bool
@@ -29,7 +26,7 @@ func (handler *RouteHandler) Handle(writer http.ResponseWriter, request *http.Re
 			}
 		}
 	}()
-
+	complated = true
 	routeData, matched := handler.app.routeTable.Match(ParseHttpMethod(request.Method), request.URL)
 	if !matched {
 		complated = false
@@ -37,7 +34,7 @@ func (handler *RouteHandler) Handle(writer http.ResponseWriter, request *http.Re
 	}
 
 	ctx := newRequestContext(handler.app, request, writer, routeData)
-
+	// 中间件链
 	ch := &middlewareChan{
 		app:         handler.app,
 		handler:     routeData.entry.handler,
@@ -51,22 +48,17 @@ func (handler *RouteHandler) Handle(writer http.ResponseWriter, request *http.Re
 
 	} else if s, ok := result.(string); ok {
 		if strings.HasPrefix(s, "view:") {
-			err = handler.app.viewEngine.Render(ctx.data, s[5:], writer)
-			if err != nil {
-				logs.Debug(err)
-			}
-			return
-			//view=ctx.View(s[5:])
+			view = ctx.View(s[5:])
 		} else {
 			view = ctx.Content(s)
 		}
 	} else {
-		panic("todo")
+		panic(fmt.Errorf("unsupport returns value: %+v ", result))
 	}
 
 	contentType := view.ContentType()
 	if contentType == "" {
-		contentType = "text/plain; charset=UTF-8"
+		contentType = "application/octet-stream; charset=UTF-8"
 	}
 	writer.Header().Set("Content-Type", contentType)
 	view.Render(ctx)
