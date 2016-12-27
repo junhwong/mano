@@ -49,9 +49,11 @@ func (app *Application) ServeHTTP(writer http.ResponseWriter, request *http.Requ
 	if !strings.HasPrefix(request.URL.Path, "/") {
 		request.URL.Path = "/" + request.URL.Path
 	}
-	logs.Info("%s %s", request.Method, request.URL)
+	complated := false
+	var err error
+	logs.Debug("%s %s", request.Method, request.URL)
 	for _, handler := range app.handlers {
-		complated, err := handler.Handle(writer, request)
+		complated, err = handler.Handle(writer, request)
 		if err != nil {
 			logs.Error(err) //TODO:
 			return
@@ -59,6 +61,9 @@ func (app *Application) ServeHTTP(writer http.ResponseWriter, request *http.Requ
 		if complated {
 			return
 		}
+	}
+	if !complated {
+		writer.WriteHeader(404)
 	}
 }
 

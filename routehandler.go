@@ -27,14 +27,10 @@ func (handler *RouteHandler) Handle(writer http.ResponseWriter, request *http.Re
 			if err, ok = r.(error); !ok {
 				err = errors.New(fmt.Sprint(r))
 			}
-			//logs.Error(r)
-
-			// log.Debug("%s\n", r)
-			// ctx.writer.WriteHeader(http.StatusInternalServerError)
 		}
 	}()
 
-	routeData, matched := handler.app.routeTable.Match(request.URL)
+	routeData, matched := handler.app.routeTable.Match(ParseHttpMethod(request.Method), request.URL)
 	if !matched {
 		complated = false
 		return
@@ -44,11 +40,9 @@ func (handler *RouteHandler) Handle(writer http.ResponseWriter, request *http.Re
 
 	ch := &middlewareChan{
 		app:         handler.app,
-		handler:     routeData.handler,
+		handler:     routeData.entry.handler,
 		index:       0,
-		middlewares: []Middleware{
-		//mid, test,
-		},
+		middlewares: routeData.entry.middlewares,
 	}
 	ctx.Data("lang", handler.app.lang) //设置默认语言资源到上下文
 	result := ch.exec(ctx)
@@ -62,6 +56,7 @@ func (handler *RouteHandler) Handle(writer http.ResponseWriter, request *http.Re
 				logs.Debug(err)
 			}
 			return
+			//view=ctx.View(s[5:])
 		} else {
 			view = ctx.Content(s)
 		}

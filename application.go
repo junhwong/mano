@@ -3,7 +3,6 @@ package mano
 import (
 	"fmt"
 	"reflect"
-	"regexp"
 	"sync"
 
 	"github.com/junhwong/mano/utils"
@@ -41,11 +40,7 @@ func (app *Application) Use(registrations ...interface{}) {
 			val.Init(app)
 			app.handlers = append(app.handlers, val)
 		} else if val, ok := obj.(*RouterGroup); ok {
-			for _, r := range val.items {
-				pattern := regexp.MustCompile(compilePattern(r.pattern))
-				handler := buildHandler(app, r.handler)
-				app.routeTable.Register(pattern, handler, 0, false)
-			}
+			val.buildTo(app.routeTable, app)
 		} else {
 			err = fmt.Errorf("unsupport :%v", reflect.TypeOf(obj).String())
 		}

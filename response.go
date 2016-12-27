@@ -15,3 +15,8 @@ func (r *Response) Writer() http.ResponseWriter {
 func (r *Response) AddCookie(c *http.Cookie) {
 	http.SetCookie(r.writer, c)
 }
+
+func (r *Response) AppendHeader(key, value string) *Response {
+	r.Writer().Header().Add(key, value)
+	return r
+}
